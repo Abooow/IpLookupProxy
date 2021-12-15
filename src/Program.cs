@@ -1,8 +1,13 @@
+using IpLookupProxy.Api.DataAccess.Repositories;
+
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
+
+builder.Services.AddSingleton<IIpRepository, MongoDbRepository>(x =>
+    new(builder.Configuration.GetConnectionString("MongoDb"), builder.Configuration.GetConnectionString("MongoDbName")));
 
 var app = builder.Build();
 
