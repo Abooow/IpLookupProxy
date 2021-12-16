@@ -47,8 +47,8 @@ app.MapGet("/api/{ip}", async (string ip, IpInfoService ipInfoService) =>
 {
     try
     {
-        var result = await ipInfoService.GetIpInfoAsync(ip);
-        return Results.Ok(result.IpInfoRecord);
+        var ipInfo = await ipInfoService.GetIpInfoAsync(ip);
+        return Results.Ok(ipInfo);
     }
     catch (InvalidIpAddressException e)
     {

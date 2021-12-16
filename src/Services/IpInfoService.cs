@@ -1,7 +1,6 @@
 ﻿using IpLookupProxy.Api.DataAccess.Models;
 using IpLookupProxy.Api.DataAccess.Repositories;
 using IpLookupProxy.Api.Exceptions;
-using IpLookupProxy.Api.Models;
 using System.Net;
 
 namespace IpLookupProxy.Api.Services;
@@ -19,7 +18,7 @@ internal class IpInfoService
         _ipClientsFactory = ipClientsFactory;
     }
 
-    public async Task<IpInfoResult> GetIpInfoAsync(string ipAddress)
+    public async Task<IpInfoRecord> GetIpInfoAsync(string ipAddress)
     {
         ipAddress = ipAddress.Trim();
         if (!IPAddress.TryParse(ipAddress, out _))
@@ -27,24 +26,22 @@ internal class IpInfoService
 
         var cachedIpInfo = await _ipRepository.GetIpInfoAsync(ipAddress);
         if (cachedIpInfo is not null)
-            return IpInfoResult.Success(cachedIpInfo);
+            return cachedIpInfo;
 
         var fechedIpInfoResult = await FetchIpInfoAsync(ipAddress);
-        if (fechedIpInfoResult.IpInfo is null)
-            return IpInfoResult.Fail(fechedIpInfoResult.WaitTime);
 
-        _ipRepository.AddIpInfo(fechedIpInfoResult.IpInfo);
+        _ipRepository.AddIpInfo(fechedIpInfoResult);
         await _ipRepository.SaveChangesAsync();
 
-        return IpInfoResult.Success(fechedIpInfoResult.IpInfo);
+        return fechedIpInfoResult;
     }
 
-    private async Task<(IpInfoRecord? IpInfo, TimeSpan WaitTime)> FetchIpInfoAsync(string ipAddress)
+    private async Task<IpInfoRecord> FetchIpInfoAsync(string ipAddress)
     {
         var clients = _clientRateLimiter.GetClients();
         foreach (var client in clients)
         {
-            bool shouldThrottle = _clientRateLimiter.ShouldThrottleClient(client, 1, out TimeSpan clientWaitTime);
+            bool shouldThrottle = _clientRateLimiter.ShouldThrottleClient(client, 1, out _);
             if (shouldThrottle)
                 continue;
 
@@ -53,14 +50,14 @@ internal class IpInfoService
                 var ipClient = _ipClientsFactory.GetIpHttpClient(client);
                 var responseModel = await ipClient.GetInfoAsync(ipAddress);
 
-                return (new IpInfoRecord()
+                return new IpInfoRecord()
                 {
                     Ip = responseModel.Ip,
                     City = responseModel.City,
                     Region = responseModel.Region,
                     CountryCode = responseModel.CountryCode,
                     CountryName = responseModel.CountryName
-                }, TimeSpan.Zero);
+                };
             }
             catch
             {
