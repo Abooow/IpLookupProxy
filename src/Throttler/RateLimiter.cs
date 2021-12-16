@@ -5,6 +5,11 @@ internal class RateLimiter
     private readonly TokenBucketRateLimiter[] _tokenBuckets;
 
     public RateLimiter(params RateLimitRule[] rateLimitRules)
+        : this(rateLimitRules.AsEnumerable())
+    {
+    }
+
+    public RateLimiter(IEnumerable<RateLimitRule> rateLimitRules)
     {
         _tokenBuckets = rateLimitRules.Select(x => new TokenBucketRateLimiter(x.Occurrences, x.TimeUnit)).ToArray();
     }
