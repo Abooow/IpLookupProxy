@@ -26,6 +26,7 @@ public class MongoDbIpRepository : IIpRepository
 
     public void AddIpInfo(IpInfoRecord ipInfoRecord)
     {
+        ipInfoRecord.CachedDate = DateTime.UtcNow;
         _cachedRecords.Add(ipInfoRecord);
     }
 
