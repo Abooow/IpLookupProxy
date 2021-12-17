@@ -1,6 +1,7 @@
 ﻿using IpLookupProxy.Api.DataAccess.Models;
 using IpLookupProxy.Api.DataAccess.Repositories;
 using IpLookupProxy.Api.Exceptions;
+using IpLookupProxy.Api.IpResponseModels;
 using System.Net;
 
 namespace IpLookupProxy.Api.Services;
@@ -18,7 +19,7 @@ internal class IpInfoService
         _ipClientsFactory = ipClientsFactory;
     }
 
-    public async Task<IpInfoRecord> GetIpInfoAsync(string ipAddress)
+    public async Task<IIpInfoModel> GetIpInfoAsync(string ipAddress)
     {
         ipAddress = ipAddress.Trim();
         if (!IPAddress.TryParse(ipAddress, out _))
@@ -28,12 +29,12 @@ internal class IpInfoService
         if (cachedIpInfo is not null)
             return cachedIpInfo;
 
-        var fechedIpInfoResult = await FetchIpInfoAsync(ipAddress);
+        var fechedIpInfo = await FetchIpInfoAsync(ipAddress);
 
-        _ipRepository.AddIpInfo(fechedIpInfoResult);
+        _ipRepository.AddIpInfo(fechedIpInfo);
         await _ipRepository.SaveChangesAsync();
 
-        return fechedIpInfoResult;
+        return fechedIpInfo;
     }
 
     private async Task<IpInfoRecord> FetchIpInfoAsync(string ipAddress)
@@ -56,7 +57,12 @@ internal class IpInfoService
                     City = responseModel.City,
                     Region = responseModel.Region,
                     CountryCode = responseModel.CountryCode,
-                    CountryName = responseModel.CountryName
+                    CountryName = responseModel.CountryName,
+                    Zip = responseModel.Zip,
+                    Latitude = responseModel.Latitude,
+                    Longitude = responseModel.Longitude,
+                    Timezone = responseModel.Timezone,
+                    IsProxy = responseModel.IsProxy
                 };
             }
             catch
