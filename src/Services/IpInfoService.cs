@@ -39,6 +39,8 @@ internal class IpInfoService
 
     private async Task<IpInfoRecord> FetchIpInfoAsync(string ipAddress)
     {
+        var badClientApiKeyExceptions = new List<BadClientApiKeyException>();
+
         var clients = _clientRateLimiter.GetClients();
         foreach (var client in clients)
         {
@@ -65,12 +67,19 @@ internal class IpInfoService
                     IsProxy = responseModel.IsProxy
                 };
             }
+            catch (BadClientApiKeyException e)
+            {
+                badClientApiKeyExceptions.Add(e);
+                continue;
+            }
             catch
             {
                 continue;
             }
         }
 
-        throw new AllClientsThrottledException();
+        throw badClientApiKeyExceptions.Count == clients.Count()
+            ? new BadClientApiKeyException(string.Join(", ", badClientApiKeyExceptions.Select(x => x.Message)))
+            : new AllClientsThrottledException();
     }
 }

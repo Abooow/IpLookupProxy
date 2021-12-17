@@ -14,9 +14,11 @@ internal class IpClientsFactory
 
     public IIpHttpClient GetIpHttpClient(string clientName)
     {
+        var httpClientFactory = _serviceProvider.GetRequiredService<IHttpClientFactory>();
+        var clientsConfiguration = _serviceProvider.GetRequiredService<ClientsConfiguration>();
         return clientName switch
         {
-            "ipapi" => new IpapiHttpClient(_serviceProvider.GetRequiredService<IHttpClientFactory>(), _serviceProvider.GetRequiredService<ClientsConfiguration>()),
+            "ipapi" => new IpapiHttpClient(_serviceProvider.GetRequiredService<ILogger<IpapiHttpClient>>(), httpClientFactory, clientsConfiguration),
             _ => throw new Exception($"'{clientName}' is not a registered client."),
         };
     }
