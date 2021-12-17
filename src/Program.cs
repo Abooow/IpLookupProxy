@@ -1,6 +1,7 @@
 using IpLookupProxy.Api;
 using IpLookupProxy.Api.DataAccess.Repositories;
 using IpLookupProxy.Api.Exceptions;
+using IpLookupProxy.Api.Middlewares;
 using IpLookupProxy.Api.Models;
 using IpLookupProxy.Api.Services;
 
@@ -11,8 +12,11 @@ builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 builder.Services.AddHttpClient();
 
-builder.Services.AddSingleton<IIpRepository, MongoDbRepository>(x =>
+builder.Services.AddSingleton<IIpRepository, MongoDbIpRepository>(x =>
     new(builder.Configuration.GetConnectionString("MongoDb"), builder.Configuration.GetConnectionString("MongoDbName")));
+
+var apiServerKeySection = builder.Configuration.GetSection(nameof(ApiServerKeySettings));
+builder.Services.Configure<ApiServerKeySettings>(apiServerKeySection);
 
 var configuredClients = builder.Configuration.GetSection("Clients").Get<ClientConfigInfo[]>();
 var clientRateLimiter = new ClientRateLimiter(configuredClients
@@ -38,6 +42,7 @@ if (app.Environment.IsDevelopment())
     app.UseSwaggerUI();
 }
 
+app.UseApiServerKey();
 app.UseHttpsRedirection();
 
 // Endpoints.

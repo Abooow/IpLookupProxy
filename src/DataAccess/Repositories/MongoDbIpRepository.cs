@@ -4,14 +4,14 @@ using System.Collections.Concurrent;
 
 namespace IpLookupProxy.Api.DataAccess.Repositories;
 
-public class MongoDbRepository : IIpRepository
+public class MongoDbIpRepository : IIpRepository
 {
     private const string IpInfoTableName = "IpInfos";
 
     private readonly IMongoDatabase _database;
     private readonly ConcurrentBag<IpInfoRecord> _cachedRecords;
 
-    public MongoDbRepository(string connectionString, string database)
+    public MongoDbIpRepository(string connectionString, string database)
     {
         var client = new MongoClient(connectionString);
         _database = client.GetDatabase(database);
