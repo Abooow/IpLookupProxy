@@ -4,9 +4,9 @@ internal class ClientsConfiguration
 {
     public IReadOnlyDictionary<string, ClientConfigInfo> ClientConfigurations { get; }
 
-    public ClientsConfiguration(IEnumerable<KeyValuePair<string, ClientConfigInfo>> clientConfigurations)
+    public ClientsConfiguration(IEnumerable<ClientConfigInfo> clientConfigurations)
     {
-        ClientConfigurations = new Dictionary<string, ClientConfigInfo>(clientConfigurations);
+        ClientConfigurations = clientConfigurations.ToDictionary(x => x.Name);
     }
 
     public bool ClientExists(string clientName)

@@ -12,24 +12,20 @@ builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 builder.Services.AddHttpClient();
 
+// Database.
 builder.Services.AddSingleton<IIpRepository, MongoDbIpRepository>(x =>
     new(builder.Configuration.GetConnectionString("MongoDb"), builder.Configuration.GetConnectionString("MongoDbName")));
 
+// Server API key configuration.
 var apiServerKeySection = builder.Configuration.GetSection(nameof(ApiServerKeySettings));
 builder.Services.Configure<ApiServerKeySettings>(apiServerKeySection);
 
+// Clients configuration.
 var configuredClients = builder.Configuration.GetSection("Clients").Get<ClientConfigInfo[]>();
-var clientRateLimiter = new ClientRateLimiter(configuredClients
-    .Select(x => new KeyValuePair<string, IEnumerable<RateLimitRule>>(
-        x.Name,
-        x.RateLimitingRules.Select(y => new RateLimitRule(y.Occurrences, y.TimeUnit))
-        )));
 
-var clientsConfiguration = new ClientsConfiguration(configuredClients
-    .Select(x => new KeyValuePair<string, ClientConfigInfo>(x.Name, x)));
-
-builder.Services.AddSingleton(clientRateLimiter);
-builder.Services.AddSingleton(clientsConfiguration);
+// Services.
+builder.Services.AddSingleton(new ClientRateLimiter(configuredClients));
+builder.Services.AddSingleton(new ClientsConfiguration(configuredClients));
 builder.Services.AddSingleton<IpClientsFactory>();
 builder.Services.AddTransient<IpInfoService>();
 builder.Services.AddTransient<IIpClientLoadBalancer, OrderdIpClientLoadBalancer>();
