@@ -55,7 +55,8 @@ internal class IpInfoService
             Latitude = responseModel.Latitude,
             Longitude = responseModel.Longitude,
             Timezone = responseModel.Timezone,
-            IsProxy = responseModel.IsProxy
+            IsProxy = responseModel.IsProxy,
+            CachedByClient = clientName
         };
     }
 }
