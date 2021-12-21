@@ -32,6 +32,7 @@ builder.Services.AddSingleton(clientRateLimiter);
 builder.Services.AddSingleton(clientsConfiguration);
 builder.Services.AddSingleton<IpClientsFactory>();
 builder.Services.AddTransient<IpInfoService>();
+builder.Services.AddTransient<IIpClientLoadBalancer, OrderdIpClientLoadBalancer>();
 
 var app = builder.Build();
 
