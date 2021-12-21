@@ -4,24 +4,24 @@ namespace IpLookupProxy.Api.IpResponseModels;
 
 public class IpapiResponseModel : IIpInfoModel
 {
-    public string Ip { get; set; }
+    public string Ip { get; set; } = default!;
 
-    public string City { get; set; }
+    public string City { get; set; } = default!;
 
     [JsonPropertyName("region_name")]
-    public string Region { get; set; }
+    public string Region { get; set; } = default!;
 
     [JsonPropertyName("country_code")]
-    public string CountryCode { get; set; }
+    public string CountryCode { get; set; } = default!;
 
     [JsonPropertyName("country_name")]
-    public string CountryName { get; set; }
+    public string CountryName { get; set; } = default!;
 
-    public string Zip { get; set; }
+    public string Zip { get; set; } = default!;
 
-    public double Latitude { get; set; }
+    public double? Latitude { get; set; }
 
-    public double Longitude { get; set; }
+    public double? Longitude { get; set; }
 
     public string? Timezone => IpapiTimeZone?.Id;
 
@@ -35,7 +35,7 @@ public class IpapiResponseModel : IIpInfoModel
 
     public class IpapiTimeZoneModel
     {
-        public string Id { get; set; }
+        public string Id { get; set; } = default!;
     }
 
     public class IpapiSecurityModel

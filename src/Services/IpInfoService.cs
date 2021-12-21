@@ -42,21 +42,34 @@ internal class IpInfoService
         string clientName = _ipClientLoadBalancer.GetClient();
 
         var ipClient = _ipClientsFactory.GetIpHttpClient(clientName);
-        var responseModel = await ipClient.GetInfoAsync(ipAddress);
 
-        return new IpInfoRecord()
+        try
         {
-            Ip = responseModel.Ip,
-            City = responseModel.City,
-            Region = responseModel.Region,
-            CountryCode = responseModel.CountryCode,
-            CountryName = responseModel.CountryName,
-            Zip = responseModel.Zip,
-            Latitude = responseModel.Latitude,
-            Longitude = responseModel.Longitude,
-            Timezone = responseModel.Timezone,
-            IsProxy = responseModel.IsProxy,
-            CachedByClient = clientName
-        };
+            var responseModel = await ipClient.GetInfoAsync(ipAddress);
+
+            return new IpInfoRecord()
+            {
+                Ip = ipAddress,
+                Exists = true,
+                City = responseModel.City,
+                Region = responseModel.Region,
+                CountryCode = responseModel.CountryCode,
+                CountryName = responseModel.CountryName,
+                Zip = responseModel.Zip,
+                Latitude = responseModel.Latitude,
+                Longitude = responseModel.Longitude,
+                Timezone = responseModel.Timezone,
+                IsProxy = responseModel.IsProxy,
+                CachedByClient = clientName
+            };
+        }
+        catch (IpDoesNotExistException)
+        {
+            return new IpInfoRecord()
+            {
+                Ip = ipAddress,
+                Exists = false
+            };
+        }
     }
 }

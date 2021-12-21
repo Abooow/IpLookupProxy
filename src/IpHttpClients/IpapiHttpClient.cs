@@ -37,7 +37,15 @@ internal class IpapiHttpClient : IIpHttpClient
 
         var ipResult = JsonSerializer.Deserialize<IpapiResponseModel>(bodyString, jsonSerializerOptions)!;
 
+        if (!IpExists(ipResult))
+            throw new IpDoesNotExistException(ipAddress);
+
         return ipResult;
+    }
+
+    private static bool IpExists(IpapiResponseModel ipResponseModel)
+    {
+        return ipResponseModel.CountryName is not null;
     }
 
     private string GetApiEndpoint(string ipAddress)

@@ -14,9 +14,9 @@ public interface IIpInfoModel
 
     public string Zip { get; }
 
-    public double Latitude { get; }
+    public double? Latitude { get; }
 
-    public double Longitude { get; }
+    public double? Longitude { get; }
 
     public string? Timezone { get; }
 
