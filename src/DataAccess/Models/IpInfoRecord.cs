@@ -6,17 +6,17 @@ namespace IpLookupProxy.Api.DataAccess.Models;
 public class IpInfoRecord : IIpInfoModel
 {
     [BsonId]
-    public string Ip { get; set; }
+    public string Ip { get; set; } = default!;
 
-    public string City { get; set; }
+    public string City { get; set; } = default!;
 
-    public string Region { get; set; }
+    public string Region { get; set; } = default!;
 
-    public string CountryCode { get; set; }
+    public string CountryCode { get; set; } = default!;
 
-    public string CountryName { get; set; }
+    public string CountryName { get; set; } = default!;
 
-    public string Zip { get; set; }
+    public string Zip { get; set; } = default!;
 
     public double Latitude { get; set; }
 
@@ -26,7 +26,7 @@ public class IpInfoRecord : IIpInfoModel
 
     public bool? IsProxy { get; set; }
 
-    public string CachedByClient { get; set; }
+    public string CachedByClient { get; set; } = default!;
 
     public DateTime CachedDate { get; set; }
 }
