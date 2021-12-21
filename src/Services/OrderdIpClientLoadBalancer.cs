@@ -18,7 +18,7 @@ internal sealed class OrderdIpClientLoadBalancer : IIpClientLoadBalancer
     {
         var clients = _clientsConfiguration.GetEnabledClients();
         if (!clients.Any())
-            throw new NoClientsException($"All registered clients has been disabled.");
+            throw new NoClientsFoundException($"All registered clients has been disabled.");
 
         foreach (var client in clients)
         {

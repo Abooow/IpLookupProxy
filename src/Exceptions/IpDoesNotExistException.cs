@@ -3,7 +3,7 @@
 public class IpDoesNotExistException : Exception
 {
     public IpDoesNotExistException(string ipAddress)
-        : base($"The IP address {ipAddress} does not exist.")
+        : base($"The IP address '{ipAddress}' does not exist")
     {
     }
 }
