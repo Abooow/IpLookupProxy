@@ -16,9 +16,9 @@ builder.Services.AddHttpClient();
 builder.Services.AddSingleton<IIpRepository, MongoDbIpRepository>(x =>
     new(builder.Configuration.GetConnectionString("MongoDb"), builder.Configuration.GetConnectionString("MongoDbName")));
 
-// Server API key configuration.
-var apiServerKeySection = builder.Configuration.GetSection(nameof(ApiServerKeySettings));
-builder.Services.Configure<ApiServerKeySettings>(apiServerKeySection);
+// Server API configuration.
+var apiServerSection = builder.Configuration.GetSection(nameof(ApiServerSettings));
+builder.Services.Configure<ApiServerSettings>(apiServerSection);
 
 // Clients configuration.
 var configuredClients = builder.Configuration.GetSection("Clients").Get<ClientConfigInfo[]>();
