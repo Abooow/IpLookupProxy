@@ -8,6 +8,7 @@ namespace IpLookupProxy.Api.IpHttpClients;
 internal class IpapiHttpClient : IIpHttpClient
 {
     private static readonly JsonSerializerOptions jsonSerializerOptions = new JsonSerializerOptions() { PropertyNameCaseInsensitive = true };
+    private const string IpapiClientName = "ipapi";
 
     private readonly ILogger<IpapiHttpClient> _logger;
     private readonly IHttpClientFactory _httpClientFactory;
@@ -31,8 +32,12 @@ internal class IpapiHttpClient : IIpHttpClient
         if (badResponse.Success is not null && !badResponse.Success.Value)
         {
             _logger.LogCritical("An error occurred for client: {ClientName} - StatusCode: {StatusCode} - Message: {Message}",
-                "ipapi", badResponse.Error!.Code, badResponse.Error!.Type);
-            throw new BadClientApiKeyException("ipapi", badResponse.Error!.Type);
+                IpapiClientName, badResponse.Error!.Code, badResponse.Error!.Type);
+
+            if (badResponse.Error.Code == 101)
+                throw new BadClientApiKeyException(IpapiClientName);
+            else
+                throw new ClientErrorException(IpapiClientName, badResponse.Error!.Type);
         }
 
         var ipResult = JsonSerializer.Deserialize<IpapiResponseModel>(bodyString, jsonSerializerOptions)!;
@@ -50,7 +55,7 @@ internal class IpapiHttpClient : IIpHttpClient
 
     private string GetApiEndpoint(string ipAddress)
     {
-        return $"http://api.ipapi.com/api/{ipAddress}?access_key={_clientsConfiguration.GetApiKey("ipapi")}";
+        return $"http://api.ipapi.com/api/{ipAddress}?access_key={_clientsConfiguration.GetApiKey(IpapiClientName)}";
     }
 
     private class IpapiBadResponse
