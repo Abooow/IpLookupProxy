@@ -70,7 +70,8 @@ internal class IpInfoService
             return new IpInfoRecord()
             {
                 Ip = ipAddress,
-                Exists = false
+                Exists = false,
+                FetchedFromClient = clientName
             };
         }
     }
