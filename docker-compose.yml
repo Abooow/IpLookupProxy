@@ -1,0 +1,32 @@
+version: '3.8'
+
+services:
+  mongodb:
+    image: mongo:5.0
+    container_name: iplookup-mongodb
+    environment:
+      MONGO_INITDB_ROOT_USERNAME: 'MongoUser'
+      MONGO_INITDB_ROOT_PASSWORD: 'Pa$$w0rd2021'
+    volumes:
+      - iplookup-mongodb:/data/db
+    ports:
+      - '27017:27017'
+
+  iplookup-server:
+    container_name: iplookup-server
+    build: .
+    environment:
+      Logging__Console__FormatterName: 'Simple'
+      ConnectionStrings__MongoDb: 'mongodb://MongoUser:Pa$$w0rd2021@mongodb'
+      ConnectionStrings__MongoDbName: 'IpLookup'
+      ApiServerSettings__Key: 'SERVER_API_KEY_HERE'
+      ApiServerSettings__AllowedRemotes__0: '172.22.0.1'
+      Clients__0__ApiKey: 'CLIENT_API_KEY_HERE'
+    ports:
+      - '8080:80'
+      - '8081:443'
+    depends_on:
+      - 'mongodb'
+    
+volumes:
+  iplookup-mongodb:

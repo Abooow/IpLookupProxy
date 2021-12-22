@@ -14,11 +14,11 @@ public class ApiServerMiddleware
         _next = next;
     }
 
-    public async Task InvokeAsync(HttpContext httpContext, IOptions<ApiServerSettings> apiServerOptions)
+    public async Task InvokeAsync(HttpContext httpContext, IOptions<ApiServerSettings> apiServerOptions, ILogger<ApiServerMiddleware> logger)
     {
         var apiServerKeySettings = apiServerOptions.Value;
 
-        if (!await ValidateRemoteConnectionAsync(httpContext, apiServerKeySettings))
+        if (!await ValidateRemoteConnectionAsync(httpContext, apiServerKeySettings, logger))
             return;
 
         if (!await ValidateApiKeyAsync(httpContext, apiServerKeySettings))
@@ -27,18 +27,19 @@ public class ApiServerMiddleware
         await _next(httpContext);
     }
 
-    private static async Task<bool> ValidateRemoteConnectionAsync(HttpContext httpContext, ApiServerSettings apiServerSettings)
+    private static async Task<bool> ValidateRemoteConnectionAsync(HttpContext httpContext, ApiServerSettings apiServerSettings, ILogger<ApiServerMiddleware> logger)
     {
         if (apiServerSettings.AllowAnyRemote)
             return true;
 
-        string remoteIp = httpContext.Connection.RemoteIpAddress?.ToString() ?? "::1";
-        if (remoteIp == "::1")
+        string remoteIp = httpContext.Connection.RemoteIpAddress?.MapToIPv4().ToString() ?? "0.0.0.1";
+        if (remoteIp == "0.0.0.1")
             return true;
 
         bool allowRemoteHost = apiServerSettings.AllowedRemotes.Any(x => x == remoteIp);
         if (!allowRemoteHost)
         {
+            logger.LogInformation("Blocked request from {RemoteIp}", remoteIp);
             await WriteBadResponseAsync(httpContext.Response, "Not allowed.");
             return false;
         }
