@@ -62,6 +62,6 @@ internal class IpapiHttpClient : IIpHttpClient
     private class IpapiErrorModel
     {
         public int Code { get; set; }
-        public string Type { get; set; }
+        public string Type { get; set; } = default!;
     }
 }

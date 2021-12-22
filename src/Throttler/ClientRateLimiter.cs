@@ -9,8 +9,8 @@ internal class ClientRateLimiter
 
     public ClientRateLimiter(IEnumerable<ClientConfigInfo> clientConfigInfos)
         : this(clientConfigInfos.Select(x => new KeyValuePair<string, IEnumerable<RateLimitRule>>(
-            x.Name,
-            x.RateLimitingRules.Select(y => new RateLimitRule(y.Occurrences, y.TimeUnit)))))
+            x.Name!,
+            x.RateLimitingRules!.Select(y => new RateLimitRule(y.Occurrences, y.TimeUnit)))))
     {
     }
 

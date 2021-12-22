@@ -36,8 +36,7 @@ public class ApiServerMiddleware
         if (remoteIp == "::1")
             return true;
 
-        bool allowRemoteHost = apiServerSettings.AllowedRemotes?.Any(x => x == remoteIp) ?? true;
-
+        bool allowRemoteHost = apiServerSettings.AllowedRemotes.Any(x => x == remoteIp);
         if (!allowRemoteHost)
         {
             await WriteBadResponseAsync(httpContext.Response, "Not allowed.");
@@ -53,7 +52,7 @@ public class ApiServerMiddleware
             return true;
 
         string? validKey = apiServerSettings.Key;
-        bool hasQueryStringKey = httpContext.Request.Query.TryGetValue(apiServerSettings?.QueryName ?? "key", out var queryStringKeys);
+        bool hasQueryStringKey = httpContext.Request.Query.TryGetValue(apiServerSettings.QueryName, out var queryStringKeys);
 
         if (!hasQueryStringKey || queryStringKeys.Count > 1)
         {

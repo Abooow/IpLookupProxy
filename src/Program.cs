@@ -22,6 +22,7 @@ builder.Services.Configure<ApiServerSettings>(apiServerSection);
 
 // Clients configuration.
 var configuredClients = builder.Configuration.GetSection("Clients").Get<ClientConfigInfo[]>();
+ClientConfigInfo.EnsureClientConfigsIsValid(configuredClients);
 
 // Services.
 builder.Services.AddSingleton(new ClientRateLimiter(configuredClients));
