@@ -27,7 +27,7 @@ public class ApiServerMiddleware
         await _next(httpContext);
     }
 
-    private static async Task<bool> ValidateRemoteConnectionAsync(HttpContext httpContext, ApiServerSettings apiServerSettings
+    private static async Task<bool> ValidateRemoteConnectionAsync(HttpContext httpContext, ApiServerSettings apiServerSettings)
     {
         if (apiServerSettings.AllowAnyRemote)
             return true;
