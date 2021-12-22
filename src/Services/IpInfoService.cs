@@ -39,8 +39,10 @@ internal class IpInfoService
 
     private async Task<IpInfoRecord> FetchIpInfoAsync(string ipAddress)
     {
-        string clientName = _ipClientLoadBalancer.GetClient();
+        if (ipAddress is "0.0.0.0" or "255.255.255.255")
+            return new IpInfoRecord() { Ip = ipAddress };
 
+        string clientName = _ipClientLoadBalancer.GetClient();
         var ipClient = _ipClientsFactory.GetIpHttpClient(clientName);
 
         try
