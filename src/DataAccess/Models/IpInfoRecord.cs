@@ -28,7 +28,7 @@ public class IpInfoRecord : IIpInfoModel
 
     public bool? IsProxy { get; set; }
 
-    public string CachedByClient { get; set; } = default!;
+    public string FetchedFromClient { get; set; } = default!;
 
     public DateTime CachedDate { get; set; }
 }

@@ -60,7 +60,7 @@ internal class IpInfoService
                 Longitude = responseModel.Longitude,
                 Timezone = responseModel.Timezone,
                 IsProxy = responseModel.IsProxy,
-                CachedByClient = clientName
+                FetchedFromClient = clientName
             };
         }
         catch (IpDoesNotExistException)
