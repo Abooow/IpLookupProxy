@@ -1,8 +1,8 @@
-﻿using IpLookupProxy.Api.DataAccess.Models;
+﻿using System.Net;
+using IpLookupProxy.Api.DataAccess.Models;
 using IpLookupProxy.Api.DataAccess.Repositories;
 using IpLookupProxy.Api.Exceptions;
 using IpLookupProxy.Api.IpResponseModels;
-using System.Net;
 
 namespace IpLookupProxy.Api.Services;
 
@@ -30,16 +30,18 @@ internal class IpInfoService
             return cachedIpInfo;
 
         var fechedIpInfo = await FetchIpInfoAsync(ipAddress);
-
-        _ipRepository.AddIpInfo(fechedIpInfo);
-        await _ipRepository.SaveChangesAsync();
+        if (fechedIpInfo.Exists)
+        {
+            _ipRepository.AddIpInfo(fechedIpInfo);
+            await _ipRepository.SaveChangesAsync();
+        }
 
         return fechedIpInfo;
     }
 
     private async Task<IpInfoRecord> FetchIpInfoAsync(string ipAddress)
     {
-        if (ipAddress is "0.0.0.0" or "255.255.255.255")
+        if (IsInternalIpAddress(ipAddress))
             return new IpInfoRecord() { Ip = ipAddress };
 
         string clientName = _ipClientLoadBalancer.GetClient();
@@ -74,5 +76,18 @@ internal class IpInfoService
                 FetchedFromClient = clientName
             };
         }
+    }
+
+    private static bool IsInternalIpAddress(string ipAddress)
+    {
+        int[] octets = ipAddress.Split('.').Take(2).Select(int.Parse).ToArray();
+        return octets[0] switch
+        {
+            0 or 10 or 127 or >= 224 => true,
+            172 => octets[1] is >= 16 and <= 31,
+            169 => octets[1] is 254,
+            192 => octets[1] is 168,
+            _ => false
+        };
     }
 }
