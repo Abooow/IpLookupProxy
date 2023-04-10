@@ -44,7 +44,7 @@ app.UseApiServerKey();
 app.UseHttpsRedirection();
 
 // Endpoints.
-app.MapGet("/", () => "Yo! Use /api/:ip to get IP location");
+app.MapGet("/", () => "Use /api/:ip to get IP location");
 
 app.MapGet("/api/{ip}", async (string ip, IpInfoService ipInfoService) =>
 {

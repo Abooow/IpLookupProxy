@@ -29,14 +29,14 @@ internal class IpInfoService
         if (cachedIpInfo is not null)
             return cachedIpInfo;
 
-        var fechedIpInfo = await FetchIpInfoAsync(ipAddress);
-        if (fechedIpInfo.Exists)
+        var fetchedIpInfo = await FetchIpInfoAsync(ipAddress);
+        if (fetchedIpInfo.Exists)
         {
-            _ipRepository.AddIpInfo(fechedIpInfo);
+            _ipRepository.AddIpInfo(fetchedIpInfo);
             await _ipRepository.SaveChangesAsync();
         }
 
-        return fechedIpInfo;
+        return fetchedIpInfo;
     }
 
     private async Task<IpInfoRecord> FetchIpInfoAsync(string ipAddress)

@@ -1,12 +1,12 @@
-﻿using IpLookupProxy.Api.DataAccess.Models;
+﻿using System.Collections.Concurrent;
+using IpLookupProxy.Api.DataAccess.Models;
 using MongoDB.Driver;
-using System.Collections.Concurrent;
 
 namespace IpLookupProxy.Api.DataAccess.Repositories;
 
 public class MongoDbIpRepository : IIpRepository
 {
-    private const string IpInfoTableName = "IpInfos";
+    private const string IpInfoTableName = "IpInfo";
 
     private readonly IMongoDatabase _database;
     private readonly ConcurrentBag<IpInfoRecord> _cachedRecords;
