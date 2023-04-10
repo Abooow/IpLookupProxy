@@ -1,9 +1,9 @@
-﻿using IpLookupProxy.Api.IpResponseModels;
+﻿using IpLookupProxy.Api.Models;
 using MongoDB.Bson.Serialization.Attributes;
 
-namespace IpLookupProxy.Api.DataAccess.Models;
+namespace IpLookupProxy.Api.DataAccess.Records;
 
-public class IpInfoRecord : IIpInfoModel
+public class IpInfoRecord : IIpInfo
 {
     [BsonId]
     public string Ip { get; set; } = default!;

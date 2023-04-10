@@ -1,14 +1,14 @@
 ﻿using IpLookupProxy.Api.Exceptions;
-using IpLookupProxy.Api.Models;
+using IpLookupProxy.Api.Options;
 
 namespace IpLookupProxy.Api.Services;
 
-internal sealed class OrderdIpClientLoadBalancer : IIpClientLoadBalancer
+internal sealed class FirstAvailableIpClientLoadBalancer : IIpClientLoadBalancer
 {
     private readonly ClientsConfiguration _clientsConfiguration;
     private readonly ClientRateLimiter _clientRateLimiter;
 
-    public OrderdIpClientLoadBalancer(ClientsConfiguration clientsConfiguration, ClientRateLimiter clientRateLimiter)
+    public FirstAvailableIpClientLoadBalancer(ClientsConfiguration clientsConfiguration, ClientRateLimiter clientRateLimiter)
     {
         _clientsConfiguration = clientsConfiguration;
         _clientRateLimiter = clientRateLimiter;

@@ -1,5 +1,5 @@
-﻿using IpLookupProxy.Api.IpHttpClients;
-using IpLookupProxy.Api.Models;
+﻿using IpLookupProxy.Api.IpHttpClients.Ipapi;
+using IpLookupProxy.Api.Options;
 
 namespace IpLookupProxy.Api.Services;
 

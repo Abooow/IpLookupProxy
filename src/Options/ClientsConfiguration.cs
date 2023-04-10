@@ -1,4 +1,4 @@
-﻿namespace IpLookupProxy.Api.Models;
+﻿namespace IpLookupProxy.Api.Options;
 
 internal class ClientsConfiguration
 {

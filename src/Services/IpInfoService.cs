@@ -1,25 +1,25 @@
 ﻿using System.Net;
-using IpLookupProxy.Api.DataAccess.Models;
-using IpLookupProxy.Api.DataAccess.Repositories;
+using IpLookupProxy.Api.DataAccess;
+using IpLookupProxy.Api.DataAccess.Records;
 using IpLookupProxy.Api.Exceptions;
-using IpLookupProxy.Api.IpResponseModels;
+using IpLookupProxy.Api.Models;
 
 namespace IpLookupProxy.Api.Services;
 
 internal class IpInfoService
 {
-    private readonly IIpRepository _ipRepository;
+    private readonly IIpInfoRepository _ipRepository;
     private readonly IIpClientLoadBalancer _ipClientLoadBalancer;
     private readonly IpClientsFactory _ipClientsFactory;
 
-    public IpInfoService(IIpRepository ipRepository, IIpClientLoadBalancer ipClientLoadBalancer, IpClientsFactory ipClientsFactory)
+    public IpInfoService(IIpInfoRepository ipRepository, IIpClientLoadBalancer ipClientLoadBalancer, IpClientsFactory ipClientsFactory)
     {
         _ipRepository = ipRepository;
         _ipClientLoadBalancer = ipClientLoadBalancer;
         _ipClientsFactory = ipClientsFactory;
     }
 
-    public async Task<IIpInfoModel> GetIpInfoAsync(string ipAddress)
+    public async Task<IIpInfo> GetIpInfoAsync(string ipAddress)
     {
         ipAddress = ipAddress.Trim();
         if (!IPAddress.TryParse(ipAddress, out _))

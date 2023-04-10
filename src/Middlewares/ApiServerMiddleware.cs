@@ -1,7 +1,7 @@
-﻿using IpLookupProxy.Api.Models;
-using Microsoft.Extensions.Options;
-using System.Net.Mime;
+﻿using System.Net.Mime;
 using System.Text.Json;
+using IpLookupProxy.Api.Options;
+using Microsoft.Extensions.Options;
 
 namespace IpLookupProxy.Api.Middlewares;
 

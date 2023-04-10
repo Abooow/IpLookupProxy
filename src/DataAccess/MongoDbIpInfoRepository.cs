@@ -1,17 +1,17 @@
 ﻿using System.Collections.Concurrent;
-using IpLookupProxy.Api.DataAccess.Models;
+using IpLookupProxy.Api.DataAccess.Records;
 using MongoDB.Driver;
 
-namespace IpLookupProxy.Api.DataAccess.Repositories;
+namespace IpLookupProxy.Api.DataAccess;
 
-public class MongoDbIpRepository : IIpRepository
+public class MongoDbIpInfoRepository : IIpInfoRepository
 {
     private const string IpInfoTableName = "IpInfo";
 
     private readonly IMongoDatabase _database;
     private readonly ConcurrentBag<IpInfoRecord> _cachedRecords;
 
-    public MongoDbIpRepository(string connectionString, string database)
+    public MongoDbIpInfoRepository(string connectionString, string database)
     {
         var client = new MongoClient(connectionString);
         _database = client.GetDatabase(database);
@@ -21,7 +21,7 @@ public class MongoDbIpRepository : IIpRepository
 
     public async Task<bool> IsIpCachedAsync(string ipAddress)
     {
-        return (await GetIpInfoAsync(ipAddress)) is not null;
+        return await GetIpInfoAsync(ipAddress) is not null;
     }
 
     public void AddIpInfo(IpInfoRecord ipInfoRecord)

@@ -1,9 +1,9 @@
-﻿using IpLookupProxy.Api.Exceptions;
-using IpLookupProxy.Api.IpResponseModels;
+﻿using System.Text.Json;
+using IpLookupProxy.Api.Exceptions;
 using IpLookupProxy.Api.Models;
-using System.Text.Json;
+using IpLookupProxy.Api.Options;
 
-namespace IpLookupProxy.Api.IpHttpClients;
+namespace IpLookupProxy.Api.IpHttpClients.Ipapi;
 
 internal class IpapiHttpClient : IIpHttpClient
 {
@@ -21,7 +21,7 @@ internal class IpapiHttpClient : IIpHttpClient
         _clientsConfiguration = clientsConfiguration;
     }
 
-    public async Task<IIpInfoModel> GetInfoAsync(string ipAddress)
+    public async Task<IIpInfo> GetInfoAsync(string ipAddress)
     {
         var httpClient = _httpClientFactory.CreateClient();
 

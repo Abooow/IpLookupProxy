@@ -1,8 +1,9 @@
 using IpLookupProxy.Api;
-using IpLookupProxy.Api.DataAccess.Repositories;
+using IpLookupProxy.Api.DataAccess;
 using IpLookupProxy.Api.Exceptions;
 using IpLookupProxy.Api.Middlewares;
 using IpLookupProxy.Api.Models;
+using IpLookupProxy.Api.Options;
 using IpLookupProxy.Api.Services;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -13,7 +14,7 @@ builder.Services.AddSwaggerGen();
 builder.Services.AddHttpClient();
 
 // Database.
-builder.Services.AddSingleton<IIpRepository, MongoDbIpRepository>(x =>
+builder.Services.AddSingleton<IIpInfoRepository, MongoDbIpInfoRepository>(x =>
     new(builder.Configuration.GetConnectionString("MongoDb"), builder.Configuration.GetConnectionString("MongoDbName")));
 
 // Server API configuration.
@@ -29,7 +30,7 @@ builder.Services.AddSingleton(new ClientRateLimiter(configuredClients));
 builder.Services.AddSingleton(new ClientsConfiguration(configuredClients));
 builder.Services.AddSingleton<IpClientsFactory>();
 builder.Services.AddTransient<IpInfoService>();
-builder.Services.AddTransient<IIpClientLoadBalancer, OrderdIpClientLoadBalancer>();
+builder.Services.AddTransient<IIpClientLoadBalancer, FirstAvailableIpClientLoadBalancer>();
 
 var app = builder.Build();
 
@@ -44,13 +45,13 @@ app.UseApiServerKey();
 app.UseHttpsRedirection();
 
 // Endpoints.
-app.MapGet("/", () => "Use /api/:ip to get IP location");
+app.MapGet("/", () => "Use /api/:ipAddress to get IP info");
 
-app.MapGet("/api/{ip}", async (string ip, IpInfoService ipInfoService) =>
+app.MapGet("/api/{ip}", async (string ipAddress, IpInfoService ipInfoService) =>
 {
     try
     {
-        var ipInfo = await ipInfoService.GetIpInfoAsync(ip);
+        var ipInfo = await ipInfoService.GetIpInfoAsync(ipAddress);
         return Results.Ok(ipInfo);
     }
     catch (InvalidIpAddressException e)

@@ -1,8 +1,8 @@
-﻿using IpLookupProxy.Api.DataAccess.Models;
+﻿using IpLookupProxy.Api.DataAccess.Records;
 
-namespace IpLookupProxy.Api.DataAccess.Repositories;
+namespace IpLookupProxy.Api.DataAccess;
 
-public interface IIpRepository
+public interface IIpInfoRepository
 {
     Task<bool> IsIpCachedAsync(string ipAddress);
 

@@ -1,8 +1,9 @@
 ﻿using System.Text.Json.Serialization;
+using IpLookupProxy.Api.Models;
 
-namespace IpLookupProxy.Api.IpResponseModels;
+namespace IpLookupProxy.Api.IpHttpClients.Ipapi;
 
-public class IpapiResponseModel : IIpInfoModel
+public class IpapiResponseModel : IIpInfo
 {
     public string Ip { get; set; } = default!;
 

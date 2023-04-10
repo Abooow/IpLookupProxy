@@ -1,6 +1,6 @@
-﻿namespace IpLookupProxy.Api.IpResponseModels;
+﻿namespace IpLookupProxy.Api.Models;
 
-public interface IIpInfoModel
+public interface IIpInfo
 {
     public string Ip { get; }
 

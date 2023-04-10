@@ -1,6 +1,6 @@
 ﻿using IpLookupProxy.Api.Exceptions;
 
-namespace IpLookupProxy.Api.Models;
+namespace IpLookupProxy.Api.Options;
 
 internal class ClientConfigInfo
 {

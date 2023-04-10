@@ -1,5 +1,5 @@
-﻿using IpLookupProxy.Api.Models;
-using System.Collections.Concurrent;
+﻿using System.Collections.Concurrent;
+using IpLookupProxy.Api.Options;
 
 namespace IpLookupProxy.Api;
 
