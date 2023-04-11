@@ -23,15 +23,17 @@ builder.Services.Configure<ApiServerSettings>(apiServerSection);
 
 // Clients configuration.
 var configuredClients = builder.Configuration.GetSection("Clients").Get<ClientConfigInfo[]>() ?? throw new Exception("No Client configuration found");
-ClientConfigInfo.EnsureClientConfigsIsValid(configuredClients);
 
 // Services.
-builder.Services.AddSingleton(new ConfiguredClients(configuredClients));
+builder.Services.AddSingleton(x => new ConfiguredClients(configuredClients, x.GetRequiredService<ILogger<ConfiguredClients>>()));
 builder.Services.AddSingleton<IpLookupClientFactory>();
 builder.Services.AddSingleton<IpInfoService>();
 builder.Services.AddSingleton<IClientLoadBalancer, FirstAvailableClientLoadBalancer>();
 
 var app = builder.Build();
+
+// 'Warm up' ConfiguredClients service to validate ClientConfigs.
+_ = app.Services.GetService<ConfiguredClients>();
 
 // Configure the HTTP request pipeline.
 if (app.Environment.IsDevelopment())

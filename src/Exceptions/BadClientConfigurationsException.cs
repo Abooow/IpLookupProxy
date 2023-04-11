@@ -6,9 +6,4 @@ public class BadClientConfigurationsException : Exception
     : base(message)
     {
     }
-
-    public BadClientConfigurationsException(IEnumerable<string> messages)
-        : base(string.Join('\n', messages))
-    {
-    }
 }
