@@ -15,14 +15,14 @@ builder.Services.AddHttpClient();
 
 // Database.
 builder.Services.AddSingleton<IIpInfoRepository, MongoDbIpInfoRepository>(x =>
-    new(builder.Configuration.GetConnectionString("MongoDb"), builder.Configuration.GetConnectionString("MongoDbName")));
+    new(builder.Configuration.GetConnectionString("MongoDb")!, builder.Configuration.GetConnectionString("MongoDbName")!));
 
 // Server API configuration.
 var apiServerSection = builder.Configuration.GetSection(nameof(ApiServerSettings));
 builder.Services.Configure<ApiServerSettings>(apiServerSection);
 
 // Clients configuration.
-var configuredClients = builder.Configuration.GetSection("Clients").Get<ClientConfigInfo[]>();
+var configuredClients = builder.Configuration.GetSection("Clients").Get<ClientConfigInfo[]>() ?? throw new Exception("No Clients configuration found");
 ClientConfigInfo.EnsureClientConfigsIsValid(configuredClients);
 
 // Services.
@@ -47,7 +47,7 @@ app.UseHttpsRedirection();
 // Endpoints.
 app.MapGet("/", () => "Use /api/:ipAddress to get IP info");
 
-app.MapGet("/api/{ip}", async (string ipAddress, IpInfoService ipInfoService) =>
+app.MapGet("/api/{ipAddress}", async (string ipAddress, IpInfoService ipInfoService) =>
 {
     try
     {
