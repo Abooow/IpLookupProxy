@@ -1,24 +1,25 @@
-﻿using IpLookupProxy.Api.IpHttpClients.Ipapi;
-using IpLookupProxy.Api.Options;
+﻿using IpLookupProxy.Api.Options;
+using IpLookupProxy.Api.Services.IpLookupClients;
+using IpLookupProxy.Api.Services.IpLookupClients.Ipapi;
 
 namespace IpLookupProxy.Api.Services;
 
-internal class IpClientsFactory
+internal class IpLookupClientFactory
 {
     private readonly IServiceProvider _serviceProvider;
 
-    public IpClientsFactory(IServiceProvider serviceProvider)
+    public IpLookupClientFactory(IServiceProvider serviceProvider)
     {
         _serviceProvider = serviceProvider;
     }
 
-    public IIpHttpClient GetIpHttpClient(string clientName)
+    public IIpLookupClient GetIpHttpClient(string clientName)
     {
         var httpClientFactory = _serviceProvider.GetRequiredService<IHttpClientFactory>();
         var clientsConfiguration = _serviceProvider.GetRequiredService<ClientsConfiguration>();
         return clientName switch
         {
-            "ipapi" => new IpapiHttpClient(_serviceProvider.GetRequiredService<ILogger<IpapiHttpClient>>(), httpClientFactory, clientsConfiguration),
+            "ipapi" => new Ipapi_IpLookupClient(_serviceProvider.GetRequiredService<ILogger<Ipapi_IpLookupClient>>(), httpClientFactory, clientsConfiguration),
             _ => throw new Exception($"'{clientName}' is not a registered client."),
         };
     }

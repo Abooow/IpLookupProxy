@@ -3,25 +3,25 @@ using IpLookupProxy.Api.Exceptions;
 using IpLookupProxy.Api.Models;
 using IpLookupProxy.Api.Options;
 
-namespace IpLookupProxy.Api.IpHttpClients.Ipapi;
+namespace IpLookupProxy.Api.Services.IpLookupClients.Ipapi;
 
-internal class IpapiHttpClient : IIpHttpClient
+internal class Ipapi_IpLookupClient : IIpLookupClient
 {
     private static readonly JsonSerializerOptions jsonSerializerOptions = new JsonSerializerOptions() { PropertyNameCaseInsensitive = true };
     private const string IpapiClientName = "ipapi";
 
-    private readonly ILogger<IpapiHttpClient> _logger;
+    private readonly ILogger<Ipapi_IpLookupClient> _logger;
     private readonly IHttpClientFactory _httpClientFactory;
     private readonly ClientsConfiguration _clientsConfiguration;
 
-    public IpapiHttpClient(ILogger<IpapiHttpClient> logger, IHttpClientFactory httpClientFactory, ClientsConfiguration clientsConfiguration)
+    public Ipapi_IpLookupClient(ILogger<Ipapi_IpLookupClient> logger, IHttpClientFactory httpClientFactory, ClientsConfiguration clientsConfiguration)
     {
         _logger = logger;
         _httpClientFactory = httpClientFactory;
         _clientsConfiguration = clientsConfiguration;
     }
 
-    public async Task<IIpInfo> GetInfoAsync(string ipAddress)
+    public async Task<IIpInfo> GetIpInfoAsync(string ipAddress)
     {
         var httpClient = _httpClientFactory.CreateClient();
 

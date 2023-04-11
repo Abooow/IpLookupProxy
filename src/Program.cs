@@ -28,7 +28,7 @@ ClientConfigInfo.EnsureClientConfigsIsValid(configuredClients);
 // Services.
 builder.Services.AddSingleton(new ClientRateLimiter(configuredClients));
 builder.Services.AddSingleton(new ClientsConfiguration(configuredClients));
-builder.Services.AddSingleton<IpClientsFactory>();
+builder.Services.AddSingleton<IpLookupClientFactory>();
 builder.Services.AddTransient<IpInfoService>();
 builder.Services.AddTransient<IIpClientLoadBalancer, FirstAvailableIpClientLoadBalancer>();
 

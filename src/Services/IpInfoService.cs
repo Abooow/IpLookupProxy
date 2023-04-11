@@ -10,9 +10,9 @@ internal class IpInfoService
 {
     private readonly IIpInfoRepository _ipRepository;
     private readonly IIpClientLoadBalancer _ipClientLoadBalancer;
-    private readonly IpClientsFactory _ipClientsFactory;
+    private readonly IpLookupClientFactory _ipClientsFactory;
 
-    public IpInfoService(IIpInfoRepository ipRepository, IIpClientLoadBalancer ipClientLoadBalancer, IpClientsFactory ipClientsFactory)
+    public IpInfoService(IIpInfoRepository ipRepository, IIpClientLoadBalancer ipClientLoadBalancer, IpLookupClientFactory ipClientsFactory)
     {
         _ipRepository = ipRepository;
         _ipClientLoadBalancer = ipClientLoadBalancer;
@@ -45,11 +45,11 @@ internal class IpInfoService
             return new IpInfoRecord() { Ip = ipAddress };
 
         string clientName = _ipClientLoadBalancer.GetClient();
-        var ipClient = _ipClientsFactory.GetIpHttpClient(clientName);
+        var ipLookupClient = _ipClientsFactory.GetIpHttpClient(clientName);
 
         try
         {
-            var responseModel = await ipClient.GetInfoAsync(ipAddress);
+            var responseModel = await ipLookupClient.GetIpInfoAsync(ipAddress);
 
             return new IpInfoRecord()
             {

@@ -1,7 +1,7 @@
 ﻿using System.Text.Json.Serialization;
 using IpLookupProxy.Api.Models;
 
-namespace IpLookupProxy.Api.IpHttpClients.Ipapi;
+namespace IpLookupProxy.Api.Services.IpLookupClients.Ipapi;
 
 public class IpapiResponseModel : IIpInfo
 {
