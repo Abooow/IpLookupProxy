@@ -18,14 +18,13 @@ internal sealed class FirstAvailableClientLoadBalancer : IClientLoadBalancer
         if (!enabledClients.Any())
             throw new NoClientsFoundException($"All registered clients has been disabled.");
 
-        int i = 0;
         foreach (var client in enabledClients)
         {
-            bool shouldThrottle = _configuredClients.ClientsRateLimiter.ShouldThrottleClient(i++, 1, out _);
+            bool shouldThrottle = _configuredClients.ClientsRateLimiter.ShouldThrottleClient(client.Index, 1, out _);
             if (shouldThrottle)
                 continue;
 
-            return client;
+            return client.Config;
         }
 
         throw new AllClientsThrottledException();

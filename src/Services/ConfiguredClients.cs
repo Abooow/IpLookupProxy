@@ -44,8 +44,8 @@ internal class ConfiguredClients
         }
     }
 
-    public IEnumerable<ClientConfigInfo> GetEnabledClients()
+    public IEnumerable<(ClientConfigInfo Config, int Index)> GetEnabledClients()
     {
-        return ClientConfigurations.Where(x => x.Enabled);
+        return ClientConfigurations.Select((x, i) => (Config: x, Index: i)).Where(x => x.Config.Enabled);
     }
 }
