@@ -27,8 +27,8 @@ ClientConfigInfo.EnsureClientConfigsIsValid(configuredClients);
 // Services.
 builder.Services.AddSingleton(new ConfiguredClients(configuredClients));
 builder.Services.AddSingleton<IpLookupClientFactory>();
-builder.Services.AddTransient<IpInfoService>();
-builder.Services.AddTransient<IIpLookupClientLoadBalancer, FirstAvailableIpLookupClientLoadBalancer>();
+builder.Services.AddSingleton<IpInfoService>();
+builder.Services.AddSingleton<IIpLookupClientLoadBalancer, FirstAvailableIpLookupClientLoadBalancer>();
 
 var app = builder.Build();
 

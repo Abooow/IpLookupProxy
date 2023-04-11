@@ -9,14 +9,12 @@ namespace IpLookupProxy.Api.Services;
 internal class IpInfoService
 {
     private readonly IIpInfoRepository _ipRepository;
-    private readonly IIpLookupClientLoadBalancer _ipClientLoadBalancer;
-    private readonly IpLookupClientFactory _ipClientsFactory;
+    private readonly IpLookupClientFactory _ipLookupClientFactory;
 
-    public IpInfoService(IIpInfoRepository ipRepository, IIpLookupClientLoadBalancer ipClientLoadBalancer, IpLookupClientFactory ipClientsFactory)
+    public IpInfoService(IIpInfoRepository ipRepository, IpLookupClientFactory ipLookupClientFactory)
     {
         _ipRepository = ipRepository;
-        _ipClientLoadBalancer = ipClientLoadBalancer;
-        _ipClientsFactory = ipClientsFactory;
+        _ipLookupClientFactory = ipLookupClientFactory;
     }
 
     public async Task<IIpInfo> GetIpInfoAsync(string ipAddress)
@@ -44,8 +42,7 @@ internal class IpInfoService
         if (IsInternalIpAddress(ipAddress))
             return new IpInfoRecord() { Ip = ipAddress };
 
-        string clientName = _ipClientLoadBalancer.GetClient();
-        var ipLookupClient = _ipClientsFactory.GetIpHttpClient(clientName);
+        var ipLookupClient = _ipLookupClientFactory.GetIpLookupClient();
 
         try
         {
@@ -64,7 +61,7 @@ internal class IpInfoService
                 Longitude = responseModel.Longitude,
                 Timezone = responseModel.Timezone,
                 IsProxy = responseModel.IsProxy,
-                FetchedFromClient = clientName
+                FetchedFromClient = ipLookupClient.ClientName
             };
         }
         catch (IpDoesNotExistException)
@@ -73,7 +70,7 @@ internal class IpInfoService
             {
                 Ip = ipAddress,
                 Exists = false,
-                FetchedFromClient = clientName
+                FetchedFromClient = ipLookupClient.ClientName
             };
         }
     }
