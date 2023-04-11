@@ -18,7 +18,7 @@ internal class IpLookupClientFactory
         var clientsConfiguration = _serviceProvider.GetRequiredService<ConfiguredClients>();
         return clientName switch
         {
-            "ipapi" => new Ipapi_IpLookupClient(_serviceProvider.GetRequiredService<ILogger<Ipapi_IpLookupClient>>(), httpClientFactory, clientsConfiguration),
+            "ipapi" => new Ipapi_IpLookupClient(_serviceProvider.GetRequiredService<ILogger<Ipapi_IpLookupClient>>(), httpClientFactory, clientsConfiguration.GetClientConfigInfo("ipapi")),
             _ => throw new Exception($"'{clientName}' is not a registered client."),
         };
     }
