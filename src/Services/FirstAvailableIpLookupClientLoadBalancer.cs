@@ -3,12 +3,12 @@ using IpLookupProxy.Api.Options;
 
 namespace IpLookupProxy.Api.Services;
 
-internal sealed class FirstAvailableIpClientLoadBalancer : IIpClientLoadBalancer
+internal sealed class FirstAvailableIpLookupClientLoadBalancer : IIpLookupClientLoadBalancer
 {
     private readonly ClientsConfiguration _clientsConfiguration;
     private readonly ClientRateLimiter _clientRateLimiter;
 
-    public FirstAvailableIpClientLoadBalancer(ClientsConfiguration clientsConfiguration, ClientRateLimiter clientRateLimiter)
+    public FirstAvailableIpLookupClientLoadBalancer(ClientsConfiguration clientsConfiguration, ClientRateLimiter clientRateLimiter)
     {
         _clientsConfiguration = clientsConfiguration;
         _clientRateLimiter = clientRateLimiter;

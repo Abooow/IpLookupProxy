@@ -30,7 +30,7 @@ builder.Services.AddSingleton(new ClientRateLimiter(configuredClients));
 builder.Services.AddSingleton(new ClientsConfiguration(configuredClients));
 builder.Services.AddSingleton<IpLookupClientFactory>();
 builder.Services.AddTransient<IpInfoService>();
-builder.Services.AddTransient<IIpClientLoadBalancer, FirstAvailableIpClientLoadBalancer>();
+builder.Services.AddTransient<IIpLookupClientLoadBalancer, FirstAvailableIpLookupClientLoadBalancer>();
 
 var app = builder.Build();
 

@@ -9,10 +9,10 @@ namespace IpLookupProxy.Api.Services;
 internal class IpInfoService
 {
     private readonly IIpInfoRepository _ipRepository;
-    private readonly IIpClientLoadBalancer _ipClientLoadBalancer;
+    private readonly IIpLookupClientLoadBalancer _ipClientLoadBalancer;
     private readonly IpLookupClientFactory _ipClientsFactory;
 
-    public IpInfoService(IIpInfoRepository ipRepository, IIpClientLoadBalancer ipClientLoadBalancer, IpLookupClientFactory ipClientsFactory)
+    public IpInfoService(IIpInfoRepository ipRepository, IIpLookupClientLoadBalancer ipClientLoadBalancer, IpLookupClientFactory ipClientsFactory)
     {
         _ipRepository = ipRepository;
         _ipClientLoadBalancer = ipClientLoadBalancer;

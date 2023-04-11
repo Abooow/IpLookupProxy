@@ -1,6 +1,6 @@
 ﻿namespace IpLookupProxy.Api.Services;
 
-public interface IIpClientLoadBalancer
+public interface IIpLookupClientLoadBalancer
 {
     string GetClient();
 }
