@@ -5,14 +5,15 @@ namespace IpLookupProxy.Api.Services;
 
 internal class ClientsRateLimiter
 {
-    private readonly ReadOnlyDictionary<string, RateLimiter> _clients;
+    private readonly IReadOnlyList<RateLimiter> _clientsRateLimiters;
 
     public ClientsRateLimiter(IEnumerable<ClientConfigInfo> clientsConfigInfo)
     {
-        var items = clientsConfigInfo
-            .Select(x => new KeyValuePair<string, RateLimiter>(x.Name, GetRateLimiter(x.RateLimitingRules)));
+        var clientRateLimiters = clientsConfigInfo
+            .Select(x => GetRateLimiter(x.RateLimitingRules))
+            .ToList();
 
-        _clients = new(new Dictionary<string, RateLimiter>(items));
+        _clientsRateLimiters = new ReadOnlyCollection<RateLimiter>(clientRateLimiters);
     }
 
     private static RateLimiter GetRateLimiter(RateLimitRuleConfiguration[] rateLimitingRules)
@@ -20,16 +21,11 @@ internal class ClientsRateLimiter
         return new RateLimiter(rateLimitingRules.Select(x => new RateLimitRule(x.Occurrences, x.TimeUnit)));
     }
 
-    public IEnumerable<string> GetClients()
+    public bool ShouldThrottleClient(int clientIndex, long tokens, out TimeSpan waitTime)
     {
-        return _clients.Keys;
-    }
+        if (clientIndex < 0 || clientIndex > _clientsRateLimiters.Count)
+            throw new IndexOutOfRangeException($"Could not find a configured client at index '{clientIndex}'.");
 
-    public bool ShouldThrottleClient(string client, long tokens, out TimeSpan waitTime)
-    {
-        if (!_clients.TryGetValue(client, out RateLimiter? rateLimiter))
-            throw new KeyNotFoundException($"Key client '{client}' was not found.");
-
-        return rateLimiter.ShouldThrottle(tokens, out waitTime);
+        return _clientsRateLimiters[clientIndex].ShouldThrottle(tokens, out waitTime);
     }
 }

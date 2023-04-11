@@ -7,7 +7,7 @@ namespace IpLookupProxy.Api.Services.IpLookupClients.Ipapi;
 
 internal class Ipapi_IpLookupClient : IIpLookupClient
 {
-    public string ClientName => "ipapi";
+    public string HandlerName => "ipapi";
 
     private static readonly JsonSerializerOptions jsonSerializerOptions = new JsonSerializerOptions() { PropertyNameCaseInsensitive = true };
 
@@ -32,13 +32,13 @@ internal class Ipapi_IpLookupClient : IIpLookupClient
         var badResponse = JsonSerializer.Deserialize<IpapiBadResponse>(bodyString, jsonSerializerOptions)!;
         if (badResponse.Success is not null && !badResponse.Success.Value)
         {
-            _logger.LogCritical("An error occurred for client: {ClientName} - StatusCode: {StatusCode} - Message: {Message}",
-                ClientName, badResponse.Error!.Code, badResponse.Error!.Type);
+            _logger.LogCritical("An error occurred for client: {HandlerName} ({Name}) - StatusCode: {StatusCode} - Message: {Message}",
+                HandlerName, _clientConfigInfo.Name ?? "Unnamed", badResponse.Error!.Code, badResponse.Error!.Type);
 
             if (badResponse.Error.Code == 101)
-                throw new BadClientApiKeyException(ClientName);
+                throw new BadClientApiKeyException(HandlerName, _clientConfigInfo.Name);
             else
-                throw new ClientErrorException(ClientName, badResponse.Error!.Type);
+                throw new ClientErrorException(HandlerName, badResponse.Error!.Type);
         }
 
         var ipResult = JsonSerializer.Deserialize<IpapiResponseModel>(bodyString, jsonSerializerOptions)!;

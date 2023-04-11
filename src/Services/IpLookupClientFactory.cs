@@ -1,29 +1,30 @@
-﻿using IpLookupProxy.Api.Services.IpLookupClients;
+﻿using IpLookupProxy.Api.Options;
+using IpLookupProxy.Api.Services.IpLookupClients;
 using IpLookupProxy.Api.Services.IpLookupClients.Ipapi;
+using IpLookupProxy.Api.Services.LoadBalancers;
 
 namespace IpLookupProxy.Api.Services;
 
 internal class IpLookupClientFactory
 {
     private readonly IServiceProvider _serviceProvider;
-    private readonly IIpLookupClientLoadBalancer _ipLookupClientLoadBalancer;
+    private readonly IClientLoadBalancer _clientLoadBalancer;
 
-    public IpLookupClientFactory(IServiceProvider serviceProvider, IIpLookupClientLoadBalancer ipLookupClientLoadBalancer)
+    public IpLookupClientFactory(IServiceProvider serviceProvider, IClientLoadBalancer clientLoadBalancer)
     {
         _serviceProvider = serviceProvider;
-        _ipLookupClientLoadBalancer = ipLookupClientLoadBalancer;
+        _clientLoadBalancer = clientLoadBalancer;
     }
 
-    public IIpLookupClient GetIpLookupClient()
+    public (IIpLookupClient Client, ClientConfigInfo configInfo) GetIpLookupClient()
     {
-        var clientName = _ipLookupClientLoadBalancer.GetClient();
+        var clientConfigInfo = _clientLoadBalancer.GetClientConfig();
         var httpClientFactory = _serviceProvider.GetRequiredService<IHttpClientFactory>();
-        var clientsConfiguration = _serviceProvider.GetRequiredService<ConfiguredClients>();
 
-        return clientName switch
+        return clientConfigInfo.Handler switch
         {
-            "ipapi" => new Ipapi_IpLookupClient(_serviceProvider.GetRequiredService<ILogger<Ipapi_IpLookupClient>>(), httpClientFactory, clientsConfiguration.GetClientConfigInfo("ipapi")),
-            _ => throw new Exception($"'{clientName}' is not a registered client."),
+            "ipapi" => (new Ipapi_IpLookupClient(_serviceProvider.GetRequiredService<ILogger<Ipapi_IpLookupClient>>(), httpClientFactory, clientConfigInfo), clientConfigInfo),
+            _ => throw new Exception($"'{clientConfigInfo.Handler}' is not a registered client."),
         };
     }
 }

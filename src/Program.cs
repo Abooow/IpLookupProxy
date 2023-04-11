@@ -4,6 +4,7 @@ using IpLookupProxy.Api.Middlewares;
 using IpLookupProxy.Api.Models;
 using IpLookupProxy.Api.Options;
 using IpLookupProxy.Api.Services;
+using IpLookupProxy.Api.Services.LoadBalancers;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -28,7 +29,7 @@ ClientConfigInfo.EnsureClientConfigsIsValid(configuredClients);
 builder.Services.AddSingleton(new ConfiguredClients(configuredClients));
 builder.Services.AddSingleton<IpLookupClientFactory>();
 builder.Services.AddSingleton<IpInfoService>();
-builder.Services.AddSingleton<IIpLookupClientLoadBalancer, FirstAvailableIpLookupClientLoadBalancer>();
+builder.Services.AddSingleton<IClientLoadBalancer, FirstAvailableClientLoadBalancer>();
 
 var app = builder.Build();
 
@@ -62,6 +63,9 @@ app.MapGet("/api/{ipAddress}", async (string ipAddress, IpInfoService ipInfoServ
     }
     catch (Exception)
     {
+        if (app.Environment.IsDevelopment())
+            throw;
+
         return Results.BadRequest(new { ErrorMessage = "An unexpected error has occurred." });
     }
 });

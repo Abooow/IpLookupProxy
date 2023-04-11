@@ -42,11 +42,11 @@ internal class IpInfoService
         if (IsInternalIpAddress(ipAddress))
             return new IpInfoRecord() { Ip = ipAddress };
 
-        var ipLookupClient = _ipLookupClientFactory.GetIpLookupClient();
+        var (client, configInfo) = _ipLookupClientFactory.GetIpLookupClient();
 
         try
         {
-            var responseModel = await ipLookupClient.GetIpInfoAsync(ipAddress);
+            var responseModel = await client.GetIpInfoAsync(ipAddress);
 
             return new IpInfoRecord()
             {
@@ -61,7 +61,8 @@ internal class IpInfoService
                 Longitude = responseModel.Longitude,
                 Timezone = responseModel.Timezone,
                 IsProxy = responseModel.IsProxy,
-                FetchedFromClient = ipLookupClient.ClientName
+                HandlerName = client.HandlerName,
+                ClientName = configInfo.Name
             };
         }
         catch (IpDoesNotExistException)
@@ -70,7 +71,8 @@ internal class IpInfoService
             {
                 Ip = ipAddress,
                 Exists = false,
-                FetchedFromClient = ipLookupClient.ClientName
+                HandlerName = client.HandlerName,
+                ClientName = configInfo.Name
             };
         }
     }

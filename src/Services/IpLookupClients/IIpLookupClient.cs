@@ -4,6 +4,6 @@ namespace IpLookupProxy.Api.Services.IpLookupClients;
 
 public interface IIpLookupClient
 {
-    string ClientName { get; }
+    string HandlerName { get; }
     Task<IIpInfo> GetIpInfoAsync(string ipAddress);
 }
