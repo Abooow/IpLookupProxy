@@ -1,28 +1,25 @@
 ﻿using IpLookupProxy.Api.Exceptions;
-using IpLookupProxy.Api.Options;
 
 namespace IpLookupProxy.Api.Services;
 
 internal sealed class FirstAvailableIpLookupClientLoadBalancer : IIpLookupClientLoadBalancer
 {
-    private readonly ClientsConfiguration _clientsConfiguration;
-    private readonly ClientRateLimiter _clientRateLimiter;
+    private readonly ConfiguredClients _configuredClients;
 
-    public FirstAvailableIpLookupClientLoadBalancer(ClientsConfiguration clientsConfiguration, ClientRateLimiter clientRateLimiter)
+    public FirstAvailableIpLookupClientLoadBalancer(ConfiguredClients configuredClients)
     {
-        _clientsConfiguration = clientsConfiguration;
-        _clientRateLimiter = clientRateLimiter;
+        _configuredClients = configuredClients;
     }
 
     public string GetClient()
     {
-        var clients = _clientsConfiguration.GetEnabledClients();
-        if (!clients.Any())
+        var enabledClients = _configuredClients.GetEnabledClients();
+        if (!enabledClients.Any())
             throw new NoClientsFoundException($"All registered clients has been disabled.");
 
-        foreach (var client in clients)
+        foreach (var client in enabledClients)
         {
-            bool shouldThrottle = _clientRateLimiter.ShouldThrottleClient(client, 1, out _);
+            bool shouldThrottle = _configuredClients.ClientsRateLimiter.ShouldThrottleClient(client, 1, out _);
             if (shouldThrottle)
                 continue;
 

@@ -1,7 +1,6 @@
 ﻿using System.Text.Json;
 using IpLookupProxy.Api.Exceptions;
 using IpLookupProxy.Api.Models;
-using IpLookupProxy.Api.Options;
 
 namespace IpLookupProxy.Api.Services.IpLookupClients.Ipapi;
 
@@ -12,13 +11,13 @@ internal class Ipapi_IpLookupClient : IIpLookupClient
 
     private readonly ILogger<Ipapi_IpLookupClient> _logger;
     private readonly IHttpClientFactory _httpClientFactory;
-    private readonly ClientsConfiguration _clientsConfiguration;
+    private readonly ConfiguredClients _configuredClients;
 
-    public Ipapi_IpLookupClient(ILogger<Ipapi_IpLookupClient> logger, IHttpClientFactory httpClientFactory, ClientsConfiguration clientsConfiguration)
+    public Ipapi_IpLookupClient(ILogger<Ipapi_IpLookupClient> logger, IHttpClientFactory httpClientFactory, ConfiguredClients configuredClients)
     {
         _logger = logger;
         _httpClientFactory = httpClientFactory;
-        _clientsConfiguration = clientsConfiguration;
+        _configuredClients = configuredClients;
     }
 
     public async Task<IIpInfo> GetIpInfoAsync(string ipAddress)
@@ -55,7 +54,7 @@ internal class Ipapi_IpLookupClient : IIpLookupClient
 
     private string GetApiEndpoint(string ipAddress)
     {
-        return $"http://api.ipapi.com/api/{ipAddress}?access_key={_clientsConfiguration.GetApiKey(IpapiClientName)}";
+        return $"http://api.ipapi.com/api/{ipAddress}?access_key={_configuredClients.GetApiKey(IpapiClientName)}";
     }
 
     private class IpapiBadResponse

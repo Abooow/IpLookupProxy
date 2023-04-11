@@ -1,12 +1,16 @@
-﻿namespace IpLookupProxy.Api.Options;
+﻿using IpLookupProxy.Api.Options;
 
-internal class ClientsConfiguration
+namespace IpLookupProxy.Api.Services;
+
+internal class ConfiguredClients
 {
     public IReadOnlyDictionary<string, ClientConfigInfo> ClientConfigurations { get; }
+    public ClientsRateLimiter ClientsRateLimiter { get; }
 
-    public ClientsConfiguration(IEnumerable<ClientConfigInfo> clientConfigurations)
+    public ConfiguredClients(IEnumerable<ClientConfigInfo> clientConfigurations)
     {
         ClientConfigurations = clientConfigurations.ToDictionary(x => x.Name);
+        ClientsRateLimiter = new ClientsRateLimiter(clientConfigurations);
     }
 
     public IEnumerable<string> GetRegisteredClients()

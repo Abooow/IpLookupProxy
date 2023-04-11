@@ -1,5 +1,4 @@
-﻿using IpLookupProxy.Api.Options;
-using IpLookupProxy.Api.Services.IpLookupClients;
+﻿using IpLookupProxy.Api.Services.IpLookupClients;
 using IpLookupProxy.Api.Services.IpLookupClients.Ipapi;
 
 namespace IpLookupProxy.Api.Services;
@@ -16,7 +15,7 @@ internal class IpLookupClientFactory
     public IIpLookupClient GetIpHttpClient(string clientName)
     {
         var httpClientFactory = _serviceProvider.GetRequiredService<IHttpClientFactory>();
-        var clientsConfiguration = _serviceProvider.GetRequiredService<ClientsConfiguration>();
+        var clientsConfiguration = _serviceProvider.GetRequiredService<ConfiguredClients>();
         return clientName switch
         {
             "ipapi" => new Ipapi_IpLookupClient(_serviceProvider.GetRequiredService<ILogger<Ipapi_IpLookupClient>>(), httpClientFactory, clientsConfiguration),

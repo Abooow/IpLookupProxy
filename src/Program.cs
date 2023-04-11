@@ -1,4 +1,3 @@
-using IpLookupProxy.Api;
 using IpLookupProxy.Api.DataAccess;
 using IpLookupProxy.Api.Exceptions;
 using IpLookupProxy.Api.Middlewares;
@@ -22,12 +21,11 @@ var apiServerSection = builder.Configuration.GetSection(nameof(ApiServerSettings
 builder.Services.Configure<ApiServerSettings>(apiServerSection);
 
 // Clients configuration.
-var configuredClients = builder.Configuration.GetSection("Clients").Get<ClientConfigInfo[]>() ?? throw new Exception("No Clients configuration found");
+var configuredClients = builder.Configuration.GetSection("Clients").Get<ClientConfigInfo[]>() ?? throw new Exception("No Client configuration found");
 ClientConfigInfo.EnsureClientConfigsIsValid(configuredClients);
 
 // Services.
-builder.Services.AddSingleton(new ClientRateLimiter(configuredClients));
-builder.Services.AddSingleton(new ClientsConfiguration(configuredClients));
+builder.Services.AddSingleton(new ConfiguredClients(configuredClients));
 builder.Services.AddSingleton<IpLookupClientFactory>();
 builder.Services.AddTransient<IpInfoService>();
 builder.Services.AddTransient<IIpLookupClientLoadBalancer, FirstAvailableIpLookupClientLoadBalancer>();
