@@ -61,7 +61,7 @@ internal class IpInfoService
                 Longitude = responseModel.Longitude,
                 Timezone = responseModel.Timezone,
                 IsProxy = responseModel.IsProxy,
-                HandlerName = client.HandlerName,
+                HandlerName = configInfo.Handler,
                 ClientName = configInfo.Name
             };
         }
@@ -71,7 +71,7 @@ internal class IpInfoService
             {
                 Ip = ipAddress,
                 Exists = false,
-                HandlerName = client.HandlerName,
+                HandlerName = configInfo.Handler,
                 ClientName = configInfo.Name
             };
         }
