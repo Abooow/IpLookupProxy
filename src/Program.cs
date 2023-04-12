@@ -53,7 +53,7 @@ app.MapGet("/api/{ipAddress}", async (string ipAddress, IpInfoService ipInfoServ
     try
     {
         var ipInfo = await ipInfoService.GetIpInfoAsync(ipAddress);
-        return Results.Ok(ipInfo);
+        return Results.Ok(new IpInfoResponse(ipInfo.Ip, ipInfo.City, ipInfo.Region, ipInfo.CountryCode, ipInfo.CountryName, ipInfo.Zip, ipInfo.Latitude, ipInfo.Longitude, ipInfo.Timezone, ipInfo.IsProxy));
     }
     catch (InvalidIpAddressException e)
     {
