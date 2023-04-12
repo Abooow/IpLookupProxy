@@ -8,10 +8,11 @@ namespace IpLookupProxy.Api.Services;
 
 internal class IpLookupClientFactory
 {
+    public static IEnumerable<string> RegisteredHandlers => ipLookupClientFactories.Keys;
+    private static readonly ReadOnlyDictionary<string, Func<IServiceProvider, ClientConfigInfo, IIpLookupClient>> ipLookupClientFactories;
+
     private readonly IServiceProvider _serviceProvider;
     private readonly IClientLoadBalancer _clientLoadBalancer;
-
-    private static readonly ReadOnlyDictionary<string, Func<IServiceProvider, ClientConfigInfo, IIpLookupClient>> ipLookupClientFactories;
 
     static IpLookupClientFactory()
     {

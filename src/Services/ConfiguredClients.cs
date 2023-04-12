@@ -13,6 +13,9 @@ internal class ConfiguredClients
     {
         var validClientConfigs = GetOnlyValidClientConfigs(clientConfigurations, logger).ToList();
 
+        if (!validClientConfigs.Any())
+            throw new BadClientConfigurationsException("No valid client configurations has been registered.");
+
         ClientConfigurations = new ReadOnlyCollection<ClientConfigInfo>(validClientConfigs);
         ClientsRateLimiter = new ClientsRateLimiter(validClientConfigs);
     }
@@ -20,9 +23,6 @@ internal class ConfiguredClients
 
     private static IEnumerable<ClientConfigInfo> GetOnlyValidClientConfigs(IEnumerable<ClientConfigInfo> clientConfigs, ILogger<ConfiguredClients> logger)
     {
-        if (!clientConfigs.Any())
-            throw new BadClientConfigurationsException("No client configurations has been registered.");
-
         int i = -1;
         foreach (var clientConfig in clientConfigs)
         {
@@ -36,7 +36,13 @@ internal class ConfiguredClients
 
             if (clientConfig.RateLimitingRules is null || !clientConfig.RateLimitingRules!.Any())
             {
-                logger.LogWarning("At least 1 rate limiting rule must be set for ClientsConfig index: {Index}. ({Handler}), this client config will be ignored.", i, clientConfig.Handler);
+                logger.LogWarning("At least 1 rate limiting rule must be set for ClientsConfig index: {Index} ({Handler}), this client config will be ignored.", i, clientConfig.Handler);
+                continue;
+            }
+
+            if (!IpLookupClientFactory.RegisteredHandlers.Contains(clientConfig.Handler))
+            {
+                logger.LogWarning("No handler has been registered for {Handler}, index: {Index}, this client config will be ignored.", clientConfig.Handler, i);
                 continue;
             }
 
