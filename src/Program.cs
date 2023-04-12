@@ -28,7 +28,7 @@ var configuredClients = builder.Configuration.GetSection("Clients").Get<ClientCo
 builder.Services.AddSingleton(x => new ConfiguredClients(configuredClients, x.GetRequiredService<ILogger<ConfiguredClients>>()));
 builder.Services.AddSingleton<IpLookupClientFactory>();
 builder.Services.AddSingleton<IpInfoService>();
-builder.Services.AddSingleton<IClientLoadBalancer, FirstAvailableClientLoadBalancer>();
+builder.Services.AddSingleton<IClientLoadBalancer, SimpleRoundRobinClientLoadBalancer>();
 
 var app = builder.Build();
 
